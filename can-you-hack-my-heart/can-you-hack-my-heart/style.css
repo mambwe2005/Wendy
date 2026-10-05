@@ -1,0 +1,175 @@
+/* ==========================================================
+   Can You Hack My Heart?  —  terminal / cybersecurity theme
+   Colours: green = system, red = denied, pink = romance
+   ========================================================== */
+:root {
+  --bg: #050a07;
+  --panel: #08120c;
+  --line: #12301d;
+  --green: #5dff8f;
+  --green-dim: #2f9c55;
+  --red: #ff4d5e;
+  --pink: #ffc2d6;
+  --pink-strong: #ff7aa8;
+  --text: #d6f5de;
+  --mono: Consolas, "Courier New", ui-monospace, Menlo, monospace;
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #0b2415 0%, transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.6;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: max(16px, env(safe-area-inset-top)) 14px max(16px, env(safe-area-inset-bottom));
+}
+:focus-visible { outline: 2px solid var(--pink-strong); outline-offset: 3px; }
+
+/* ---------- Terminal window ---------- */
+.terminal {
+  width: 100%;
+  max-width: 720px;
+  margin-top: 4vh;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px #0000, 0 0 40px #5dff8f14, 0 20px 60px #000a;
+  overflow: hidden;
+  position: relative;
+}
+.terminal::after { /* faint scanlines */
+  content: "";
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, #0000 0 2px, #00000022 2px 3px);
+  opacity: .5;
+}
+.titlebar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 11px 14px;
+  background: #0a1a11;
+  border-bottom: 1px solid var(--line);
+  font-size: .78rem; color: var(--green-dim);
+}
+.dot { width: 11px; height: 11px; border-radius: 50%; }
+.dot.red { background: #ff5f57; } .dot.amber { background: #febc2e; } .dot.green { background: #28c840; }
+.title { margin-left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status {
+  margin-left: auto; padding: 2px 9px; border-radius: 999px;
+  border: 1px solid currentColor; font-size: .7rem; letter-spacing: .08em;
+}
+.status[data-state="locked"]  { color: var(--red); }
+.status[data-state="scanning"]{ color: #febc2e; }
+.status[data-state="open"]    { color: var(--green); }
+
+.body { padding: 22px 20px 26px; min-height: 60vh; }
+
+/* ---------- Typed output ---------- */
+#output .line { margin: 0 0 4px; color: var(--green); text-shadow: 0 0 8px #5dff8f55; white-space: pre-wrap; word-break: break-word; }
+#output .line.dim  { color: var(--green-dim); text-shadow: none; }
+#output .line.warn { color: var(--red); text-shadow: 0 0 8px #ff4d5e55; font-weight: bold; margin-top: 12px; }
+#output .line.pink { color: var(--pink); text-shadow: 0 0 10px #ffc2d655; }
+.caret {
+  display: inline-block; width: .55em; height: 1.05em; background: var(--green);
+  vertical-align: text-bottom; margin-left: 2px; animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- Password form ---------- */
+.auth { margin-top: 22px; display: grid; gap: 10px; }
+.auth[hidden], .granted[hidden], [hidden] { display: none !important; }
+.prompt { color: var(--green); }
+.field { display: flex; gap: 8px; }
+input {
+  flex: 1; min-width: 0;
+  background: #030805; color: var(--green);
+  border: 1px solid var(--line); border-radius: 6px;
+  padding: 13px 14px; font: inherit; font-size: 1rem; /* 16px stops iOS zoom */
+  caret-color: var(--green);
+}
+input::placeholder { color: #2f9c5577; }
+input:focus { border-color: var(--green); box-shadow: 0 0 0 3px #5dff8f22; }
+.btn {
+  background: var(--green); color: #03140a; border: 0; border-radius: 6px;
+  padding: 13px 20px; font: inherit; font-weight: bold; cursor: pointer;
+  transition: transform .12s ease, filter .12s ease;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn:active { transform: scale(.98); }
+.ghost {
+  background: transparent; color: var(--green-dim); border: 1px solid var(--line);
+  border-radius: 6px; padding: 0 14px; font: inherit; font-size: .85rem; cursor: pointer;
+}
+.ghost:hover { color: var(--green); border-color: var(--green-dim); }
+
+.feedback { min-height: 1.6em; margin: 14px 0 0; font-weight: bold; }
+.feedback.denied { color: var(--red); text-shadow: 0 0 8px #ff4d5e55; }
+.feedback.info   { color: #febc2e; }
+.shake { animation: shake .45s ease; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); }
+}
+.flash-red { animation: flashRed .6s ease; }
+@keyframes flashRed { 0% { box-shadow: 0 0 0 2px var(--red), 0 0 50px #ff4d5e66; } 100% { box-shadow: 0 0 40px #5dff8f14; } }
+
+/* ---------- Access granted ---------- */
+.granted { margin-top: 6px; }
+.access-banner {
+  color: var(--green); font-size: clamp(1.5rem, 6vw, 2.2rem); font-weight: bold;
+  text-shadow: 0 0 18px #5dff8faa; letter-spacing: .04em;
+  animation: pop .6s cubic-bezier(.2,.9,.3,1.3) both;
+}
+@keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.welcome { color: var(--green-dim); margin: 4px 0 22px; }
+
+.card {
+  background: linear-gradient(180deg, #1a0f16, #120a10);
+  border: 1px solid #5a2a40; border-radius: 12px;
+  padding: 22px 20px;
+  color: var(--pink);
+  box-shadow: 0 0 30px #ff7aa822;
+  animation: fadeIn 1s ease both .25s;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.reveal-line { margin: 0 0 16px; color: var(--pink-strong); font-weight: bold; }
+.message p { margin: 0 0 1em; }
+.message p:last-child { margin-bottom: 0; }
+.message .sign { color: var(--pink-strong); }
+.photo { display: block; width: 100%; max-height: 380px; object-fit: cover; border-radius: 8px; margin-top: 18px; border: 1px solid #5a2a40; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: stretch; }
+.actions .ghost { padding: 12px 14px; }
+.secret {
+  margin-top: 18px; padding: 18px; border: 1px dashed var(--pink-strong); border-radius: 10px;
+  color: var(--pink); background: #ff7aa80d; animation: fadeIn .8s ease both;
+}
+.secret .file { color: var(--green-dim); font-size: .8rem; margin-bottom: 8px; display: block; }
+
+/* ---------- Floating hearts ---------- */
+.hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
+.heart {
+  position: absolute; bottom: -40px; animation: rise var(--d, 6s) linear forwards; opacity: 0;
+}
+@keyframes rise {
+  0% { transform: translateY(0) translateX(0) scale(.7); opacity: 0; }
+  10% { opacity: .9; }
+  100% { transform: translateY(-110vh) translateX(var(--x, 0)) scale(1.2); opacity: 0; }
+}
+
+@media (max-width: 480px) {
+  .body { padding: 18px 14px 22px; }
+  .title { display: none; }
+  .status { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .caret, .shake, .flash-red, .access-banner, .card, .secret { animation: none; }
+  .heart { display: none; }
+}
